@@ -36,58 +36,14 @@ public class Zone {
         }
     }
 
-    public void ClearVehicles(String directory) throws SQLException
-    {
-        Connection c = null;
-        try
-        {
-            c = getConnection(directory);
-            if(c.isValid(50)) {
-                //System.out.println("Connected");
-                // 1 & 3 - 2 & 4
-                String sql = "DELETE FROM vehicles WHERE wx BETWEEN ? AND ? AND wy BETWEEN ? AND ?;";
-                PreparedStatement statement = c.prepareStatement(sql);
-                statement.setQueryTimeout(30);
-                statement.setInt(1, input1.x);
-                statement.setInt(2, input2.x);
-                statement.setInt(3, input1.y);
-                statement.setInt(4, input2.y);
-                statement.execute();
-            } else {
-                System.out.println("No Connection");
-            }
-        }
-        catch(SQLException e)
-        {
-            System.err.println(e.getMessage());
-        }
-        finally
-        {
-            try
-            {
-                if(c != null) {
-                    c.close();
-                }
-            }
-            catch (SQLException e)
-            {
-                System.err.println(e);
-            }
-        }
-    }
-
-    private Connection getConnection(String directory) {
-        Connection c = null;
-        File path = Paths.get(directory, "vehicles.db").toFile();
-
-        try {
-            Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite:" + path);
-        } catch (Exception e) {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
-            System.exit(0);
-        }
-
-        return c;
+    public void ClearVehicles(Connection c) throws SQLException {
+        String sql = "DELETE FROM vehicles WHERE wx BETWEEN ? AND ? AND wy BETWEEN ? AND ?;";
+        PreparedStatement statement = c.prepareStatement(sql);
+        statement.setQueryTimeout(30);
+        statement.setInt(1, input1.x);
+        statement.setInt(2, input2.x);
+        statement.setInt(3, input1.y);
+        statement.setInt(4, input2.y);
+        statement.execute();
     }
 }

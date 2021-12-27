@@ -19,4 +19,4 @@
         }
     ]
 }
-//mvn exec:java -Dexec.mainClass=dev.oxymoron.zzr.App -Dexec.args="G:\Steam\steamapps\workshop\content\108600\2679542152\mods\GoDzServerB41\media\lua\client\tgodz_HUD\tgodz_HUD_RZONES.lua"
+//mvn exec:java -Dexec.mainClass=dev.oxymoron.zzr.App -Dexec.args="-f G:\Steam\steamapps\workshop\content\108600\2679542152\mods\GoDzServerB41\media\lua\client\tgodz_HUD\tgodz_HUD_RZONES.lua"

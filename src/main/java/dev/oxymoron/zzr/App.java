@@ -2,12 +2,14 @@ package dev.oxymoron.zzr;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.*;
 
 public class App 
 {
@@ -17,17 +19,25 @@ public class App
             List<Zone> zones = LoadZones(args);
             Path path = GetPath(args);
             Path save = Paths.get(path.toString(), "Saves", "Multiplayer", "servertest");
-            for(Zone zone : zones) {
-                //zone.Print();
-                zone.ClearMapFiles(save.toString());
-                zone.ClearVehicles(save.toString());
+            Connection c = null;
+            try {
+                c = getConnection(save.toString());
+                for(Zone zone : zones) {
+                    //zone.Print();
+                    zone.ClearMapFiles(save.toString());
+                    zone.ClearVehicles(c);
+                }
+            } catch (SQLException e) {
+                System.err.println(e.getMessage());
+            } finally {
+                try {
+                    if (c != null) {
+                        c.close();
+                    }
+                } catch (SQLException e) {
+                    System.err.println(e);
+                }
             }
-            // var dir = save.toFile();
-            // var tmp = dir.list();
-            // for(var p : tmp) {
-            //     System.out.println(p);
-            // }
-
         }
         catch(Exception ex)
         {
@@ -188,5 +198,20 @@ public class App
             i++;
         }
         return -1;
+    }
+
+    private static Connection getConnection(String directory) {
+        Connection c = null;
+        File path = Paths.get(directory, "vehicles.db").toFile();
+
+        try {
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite:" + path);
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+
+        return c;
     }
 }
