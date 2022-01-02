@@ -16,17 +16,24 @@ public class App
     public static void main( String[] args )
     {
         try{
+            System.out.println("Loading zones...");
             List<Zone> zones = LoadZones(args);
             Path path = GetPath(args);
             Path save = Paths.get(path.toString(), "Saves", "Multiplayer", "servertest");
             Connection c = null;
             try {
+                System.out.println("Deleting map chunks...");
                 c = getConnection(save.toString());
+                Statement stmt = c.createStatement();
                 for(Zone zone : zones) {
                     //zone.Print();
                     zone.ClearMapFiles(save.toString());
-                    zone.ClearVehicles(c);
+                    //stmt += zone.BuildSqlStatement();
+                    //zone.ClearVehicles(c);
+                    stmt.addBatch(zone.BuildSqlStatement());
                 }
+                System.out.println("Clearing vehicles...");
+                stmt.executeBatch();
             } catch (SQLException e) {
                 System.err.println(e.getMessage());
             } finally {
@@ -44,6 +51,7 @@ public class App
             System.err.println(ex.getClass().getName() + ": " + ex.getMessage());
             System.exit(0);
         }
+        System.out.println("Reset Complete.");
     }
 
     private static String readFile(String path, Charset encoding) throws IOException

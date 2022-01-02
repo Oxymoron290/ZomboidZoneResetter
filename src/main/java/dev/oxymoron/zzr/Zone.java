@@ -30,10 +30,14 @@ public class Zone {
             boolean block = bounds.stream().filter(c -> c.x == x && c.y == y).count() > 0;
             if (!block)
                 continue;
-
+            System.out.println("\t"+p+" deleted.");
             File file = Paths.get(directory, p).toFile();
             file.delete();
         }
+    }
+
+    public String BuildSqlStatement() {
+        return "DELETE FROM vehicles WHERE wx BETWEEN "+input1.x+" AND "+input2.x+" AND wy BETWEEN "+input1.y+" AND "+input2.y+";";
     }
 
     public void ClearVehicles(Connection c) throws SQLException {
