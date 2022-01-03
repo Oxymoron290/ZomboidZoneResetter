@@ -25,12 +25,14 @@ public class App
                 System.out.println("Deleting map chunks...");
                 c = getConnection(save.toString());
                 Statement stmt = c.createStatement();
+                int i = 0;
                 for(Zone zone : zones) {
-                    //zone.Print();
+                    zone.Print();
                     zone.ClearMapFiles(save.toString());
                     //stmt += zone.BuildSqlStatement();
                     //zone.ClearVehicles(c);
                     stmt.addBatch(zone.BuildSqlStatement());
+                    System.out.println((((i++) / zones.size()) * 100) + "% completed...");
                 }
                 System.out.println("Clearing vehicles...");
                 stmt.executeBatch();

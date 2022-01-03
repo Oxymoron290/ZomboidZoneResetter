@@ -10,7 +10,7 @@ public class Zone {
     public List<Coord> bounds;
 
     public void Print() {
-        System.out.println("(" + input1.x + ", " + input1.y + ") - (" + input2.x + ", " + input2.y + ")");
+        System.out.println("\tZone: (" + input1.x + ", " + input1.y + ") - (" + input2.x + ", " + input2.y + ")");
     }
 
     public void ClearMapFiles(String directory) {
@@ -30,7 +30,7 @@ public class Zone {
             boolean block = bounds.stream().filter(c -> c.x == x && c.y == y).count() > 0;
             if (!block)
                 continue;
-            System.out.println("\t"+p+" deleted.");
+            System.out.println("\t\t"+p+" deleted.");
             File file = Paths.get(directory, p).toFile();
             file.delete();
         }
