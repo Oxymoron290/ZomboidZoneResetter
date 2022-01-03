@@ -27,13 +27,15 @@ public class App
                 Statement stmt = c.createStatement();
                 int i = 0;
                 for(Zone zone : zones) {
-                    zone.Print();
+                    //zone.Print();
                     zone.ClearMapFiles(save.toString());
-                    //stmt += zone.BuildSqlStatement();
-                    //zone.ClearVehicles(c);
                     stmt.addBatch(zone.BuildSqlStatement());
-                    System.out.println((((i++) / zones.size()) * 100) + "% completed...");
+                    System.out.print("\r                                              \r");
+                    System.out.printf("%.2f", (((double)i / zones.size()) * 100));
+                    System.out.print("% completed...");
+                    i++;
                 }
+                System.out.println("");
                 System.out.println("Clearing vehicles...");
                 stmt.executeBatch();
             } catch (SQLException e) {
@@ -150,6 +152,7 @@ public class App
         content = content.substring(content.lastIndexOf('{')+1, content.lastIndexOf('}'));
         String[] segments = content.split("=\"\",");
         List<Coord> coords = new ArrayList<Coord>();
+        int i = 0;
         for (String a : segments) {
             String[] c = a.trim().split("r");
             if(c.length < 3) continue;
@@ -157,7 +160,11 @@ public class App
             coord.x = Integer.parseInt(c[1]);
             coord.y = Integer.parseInt(c[2]);
             coords.add(coord);
+            System.out.print("\r                                              \r");
+            System.out.printf("%.2f", (((double)i++ / segments.length) * 100));
+            System.out.print("% completed...");
         }
+        System.out.println("");
 
         return Zonerize(coords);
     }

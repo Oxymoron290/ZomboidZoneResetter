@@ -10,7 +10,7 @@ public class Zone {
     public List<Coord> bounds;
 
     public void Print() {
-        System.out.println("\tZone: (" + input1.x + ", " + input1.y + ") - (" + input2.x + ", " + input2.y + ")");
+        System.out.print("\tZone: (" + input1.x + ", " + input1.y + ") - (" + input2.x + ", " + input2.y + ")");
     }
 
     public void ClearMapFiles(String directory) {
@@ -32,7 +32,7 @@ public class Zone {
                 continue;
             System.out.println("\t\t"+p+" deleted.");
             File file = Paths.get(directory, p).toFile();
-            file.delete();
+            deleteFile(file);
         }
     }
 
@@ -49,5 +49,17 @@ public class Zone {
         statement.setInt(3, input1.y);
         statement.setInt(4, input2.y);
         statement.execute();
+    }
+
+    private static final java.util.concurrent.ExecutorService DELETE_SERVICE = java.util.concurrent.Executors.newSingleThreadExecutor();
+    public static void deleteFile(final File file) {
+        if (file != null) {
+            DELETE_SERVICE.submit(new Runnable() {
+                @Override
+                public void run() {
+                    file.delete();
+                }
+            });
+        }
     }
 }
