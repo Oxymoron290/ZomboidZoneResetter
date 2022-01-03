@@ -10,11 +10,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.*;
+import java.time.Duration;
+import java.time.Instant;
 
 public class App 
 {
     public static void main( String[] args )
     {
+        Instant startTime = Instant.now();
         try{
             System.out.println("Loading zones...");
             List<Zone> zones = LoadZones(args);
@@ -55,7 +58,9 @@ public class App
             System.err.println(ex.getClass().getName() + ": " + ex.getMessage());
             System.exit(0);
         }
-        System.out.println("Reset Complete.");
+        Instant endTime = Instant.now();
+        Duration duration = Duration.between(startTime, endTime);
+        System.out.println("Reset Completed in " + (duration.getSeconds() / 60) + ":" + (duration.getSeconds() % 60000) + ".");
     }
 
     private static String readFile(String path, Charset encoding) throws IOException
