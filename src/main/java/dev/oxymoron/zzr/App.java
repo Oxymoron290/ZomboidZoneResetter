@@ -1,6 +1,7 @@
 package dev.oxymoron.zzr;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.io.File;
 import java.io.IOException;
@@ -33,7 +34,7 @@ public class App
                     //zone.Print();
                     zone.ClearMapFiles(save.toString());
                     stmt.addBatch(zone.BuildSqlStatement());
-                    System.out.print("\r                                              \r");
+                    //System.out.print("\r                                              \r");
                     System.out.printf("%.2f", (((double)i / zones.size()) * 100));
                     System.out.print("% completed...");
                     i++;
@@ -41,6 +42,7 @@ public class App
                 System.out.println("");
                 System.out.println("Clearing vehicles...");
                 stmt.executeBatch();
+                System.out.println("Vehicles Cleared.");
             } catch (SQLException e) {
                 System.err.println(e.getMessage());
             } finally {
@@ -57,6 +59,23 @@ public class App
         {
             System.err.println(ex.getClass().getName() + ": " + ex.getMessage());
             System.exit(0);
+        }
+        Zone.DELETE_SERVICE.shutdown();
+        try {
+            int i = 0;
+            while (!Zone.DELETE_SERVICE.isTerminated())
+            {
+                if (Zone.DELETE_SERVICE.awaitTermination(15, TimeUnit.SECONDS)) continue;
+                i++;
+                System.out.println(i+") Waiting for map cleanup...");
+                if (i > 36) {
+                    System.out.println("Alright, that's long enough...");
+                    Zone.DELETE_SERVICE.shutdownNow();
+                }
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            Zone.DELETE_SERVICE.shutdownNow();
         }
         Instant endTime = Instant.now();
         Duration duration = Duration.between(startTime, endTime);
@@ -165,7 +184,7 @@ public class App
             coord.x = Integer.parseInt(c[1]);
             coord.y = Integer.parseInt(c[2]);
             coords.add(coord);
-            System.out.print("\r                                              \r");
+            //System.out.print("\r                                              \r");
             System.out.printf("%.2f", (((double)i++ / segments.length) * 100));
             System.out.print("% completed...");
         }

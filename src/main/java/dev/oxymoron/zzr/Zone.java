@@ -1,6 +1,7 @@
 package dev.oxymoron.zzr;
 
 import java.util.*;
+import java.util.concurrent.Callable;
 import java.io.File;
 import java.nio.file.Paths;
 import java.sql.*;
@@ -16,6 +17,7 @@ public class Zone {
     public void ClearMapFiles(String directory) {
         File path = new File(directory);
         String[] contents = path.list();
+        
         for (String p : contents) {
             if (!p.startsWith("map_"))
                 continue;
@@ -51,12 +53,13 @@ public class Zone {
         statement.execute();
     }
 
-    private static final java.util.concurrent.ExecutorService DELETE_SERVICE = java.util.concurrent.Executors.newSingleThreadExecutor();
+    public static final java.util.concurrent.ExecutorService DELETE_SERVICE = java.util.concurrent.Executors.newSingleThreadExecutor();
     public static void deleteFile(final File file) {
         if (file != null) {
             DELETE_SERVICE.submit(new Runnable() {
                 @Override
                 public void run() {
+                    System.out.println("\t"+file.getName()+" deleted");
                     file.delete();
                 }
             });
