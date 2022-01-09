@@ -34,9 +34,8 @@ public class App
                     //zone.Print();
                     zone.ClearMapFiles(save.toString());
                     stmt.addBatch(zone.BuildSqlStatement());
-                    //System.out.print("\r                                              \r");
                     System.out.printf("%.2f", (((double)i / zones.size()) * 100));
-                    System.out.print("% completed...");
+                    System.out.println("% completed...");
                     i++;
                 }
                 System.out.println("");
@@ -184,9 +183,8 @@ public class App
             coord.x = Integer.parseInt(c[1]);
             coord.y = Integer.parseInt(c[2]);
             coords.add(coord);
-            //System.out.print("\r                                              \r");
             System.out.printf("%.2f", (((double)i++ / segments.length) * 100));
-            System.out.print("% completed...");
+            System.out.println("% completed...");
         }
         System.out.println("");
 
